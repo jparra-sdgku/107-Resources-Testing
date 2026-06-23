@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Android Testing — Class 1 Resources</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0D1117;--bg2:#161B22;--bg3:#21262D;--bg4:#30363D;
+  --border:#30363D;--border2:#484F58;
+  --text:#E6EDF3;--text2:#8B949E;--text3:#6E7681;
+  --blue:#58A6FF;--blue2:#1F6FEB;--blue-bg:#0D2137;
+  --green:#3FB950;--green2:#196C2E;--green-bg:#0A1F0D;
+  --amber:#D29922;--amber-bg:#1F1700;
+  --purple:#BC8CFF;--purple-bg:#1A0F2E;
+  --red:#F85149;--red-bg:#1A0707;--red2:#5A1515;
+  --mono:'Courier New',monospace;
+}
+html,body{min-height:100%;margin:0;padding:0;background:var(--bg);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;color:var(--text)}
+
+.topbar{background:var(--bg2);border-bottom:0.5px solid var(--border);padding:14px 40px;display:flex;align-items:center;justify-content:space-between}
+.dots{display:flex;gap:8px}
+.dot{width:13px;height:13px;border-radius:50%}
+.dot-r{background:#FF5F56}.dot-y{background:#FEBC2E}.dot-g{background:#27C93F}
+.file-tab{font-size:13px;color:var(--text2);font-family:var(--mono);background:var(--bg3);padding:5px 14px;border-radius:4px;border:0.5px solid var(--border)}
+.repo-tag{font-size:12px;color:var(--text3);font-family:var(--mono)}
+
+.hero{max-width:860px;margin:0 auto;padding:80px 40px 60px;text-align:center}
+.hero-label{display:inline-block;font-size:12px;font-family:var(--mono);padding:4px 12px;border-radius:4px;margin-bottom:20px;font-weight:500;background:var(--blue-bg);color:var(--blue);border:0.5px solid var(--blue2)}
+.hero h1{font-size:44px;font-weight:700;color:var(--text);line-height:1.2;margin-bottom:16px}
+.hero h1 span{color:var(--blue)}
+.hero p{font-size:17px;color:var(--text2);line-height:1.7;max-width:600px;margin:0 auto 40px}
+
+.cards-grid{max-width:860px;margin:0 auto;padding:0 40px;display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin-bottom:60px}
+
+.resource-card{background:var(--bg2);border:0.5px solid var(--border);border-radius:12px;padding:28px;text-decoration:none;color:inherit;display:flex;flex-direction:column;transition:all .2s;position:relative;overflow:hidden}
+.resource-card:hover{border-color:var(--border2);transform:translateY(-2px);box-shadow:0 8px 32px rgba(0,0,0,.4)}
+.resource-card.blue:hover{border-color:var(--blue2)}
+.resource-card.green:hover{border-color:var(--green2)}
+.resource-card.amber:hover{border-color:#5C4000}
+.resource-card.purple:hover{border-color:#5A2D9E}
+
+.card-icon{font-size:32px;margin-bottom:16px}
+.card-type{font-size:11px;font-family:var(--mono);font-weight:600;letter-spacing:.08em;text-transform:uppercase;margin-bottom:8px}
+.card-type.blue{color:var(--blue)}
+.card-type.green{color:var(--green)}
+.card-type.amber{color:var(--amber)}
+.card-type.purple{color:var(--purple)}
+.card-title{font-size:20px;font-weight:600;color:var(--text);margin-bottom:8px}
+.card-desc{font-size:13px;color:var(--text2);line-height:1.6;flex:1;margin-bottom:20px}
+.card-meta{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:20px}
+.meta-pill{font-size:11px;font-family:var(--mono);padding:2px 8px;border-radius:3px}
+.meta-blue{background:var(--blue-bg);color:var(--blue)}
+.meta-green{background:var(--green-bg);color:var(--green)}
+.meta-amber{background:var(--amber-bg);color:var(--amber)}
+.meta-purple{background:var(--purple-bg);color:var(--purple)}
+.card-btn{display:inline-flex;align-items:center;gap:6px;font-size:13px;padding:8px 16px;border-radius:6px;font-weight:500;transition:all .15s;border:0.5px solid}
+.btn-blue{background:var(--blue-bg);color:var(--blue);border-color:var(--blue2)}
+.resource-card.blue:hover .btn-blue{background:var(--blue2);color:var(--text)}
+.btn-green{background:var(--green-bg);color:var(--green);border-color:var(--green2)}
+.resource-card.green:hover .btn-green{background:var(--green2);color:var(--text)}
+.btn-amber{background:var(--amber-bg);color:var(--amber);border-color:#5C4000}
+.resource-card.amber:hover .btn-amber{background:#5C4000;color:var(--text)}
+.btn-purple{background:var(--purple-bg);color:var(--purple);border-color:#5A2D9E}
+.resource-card.purple:hover .btn-purple{background:#5A2D9E;color:var(--text)}
+
+.divider-section{max-width:860px;margin:0 auto 40px;padding:0 40px}
+.section-label{font-size:11px;font-family:var(--mono);font-weight:600;letter-spacing:.08em;color:var(--text3);text-transform:uppercase;padding-bottom:12px;border-bottom:0.5px solid var(--border);margin-bottom:24px}
+
+.topics-grid{max-width:860px;margin:0 auto;padding:0 40px 60px;display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
+.topic-chip{background:var(--bg2);border:0.5px solid var(--border);border-radius:8px;padding:12px 16px;display:flex;align-items:center;gap:10px}
+.topic-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0}
+.topic-text{font-size:13px;color:var(--text2)}
+
+.footer{background:var(--bg2);border-top:0.5px solid var(--border);padding:24px 40px;text-align:center}
+.footer p{font-size:13px;color:var(--text3);font-family:var(--mono)}
+.footer a{color:var(--blue);text-decoration:none}
+.footer a:hover{text-decoration:underline}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="dots"><div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div></div>
+  <div class="file-tab">index.html</div>
+  <span class="repo-tag">// Android Testing Course — Class Resources</span>
+</div>
+
+<div class="hero">
+  <div class="hero-label">// Class 1 — Introduction to Android Testing</div>
+  <h1>Study Resources for<br><span>Android Testing</span></h1>
+  <p>All the materials you need to study and practice the concepts from Class 1. Use the Glossary to look up terms and the Flashcards to test yourself.</p>
+</div>
+
+<div class="cards-grid">
+
+  <a class="resource-card blue" href="Class1_Glossary.html">
+    <div class="card-icon">📖</div>
+    <div class="card-type blue">Reference</div>
+    <div class="card-title">Glossary</div>
+    <div class="card-desc">All 24 key terms from Class 1 with detailed definitions, code examples, and links to related concepts. Searchable and organized alphabetically.</div>
+    <div class="card-meta">
+      <span class="meta-pill meta-blue">24 terms</span>
+      <span class="meta-pill meta-blue">Searchable</span>
+      <span class="meta-pill meta-blue">Code examples</span>
+    </div>
+    <span class="card-btn btn-blue">Open Glossary →</span>
+  </a>
+
+  <a class="resource-card green" href="Class1_Flashcards.html">
+    <div class="card-icon">🃏</div>
+    <div class="card-type green">Practice</div>
+    <div class="card-title">Flashcards</div>
+    <div class="card-desc">Interactive study cards for all 24 terms. Flip to reveal definitions, mark cards as learned, filter by category, and shuffle for random order.</div>
+    <div class="card-meta">
+      <span class="meta-pill meta-green">24 cards</span>
+      <span class="meta-pill meta-green">Interactive</span>
+      <span class="meta-pill meta-green">Shuffle mode</span>
+    </div>
+    <span class="card-btn btn-green">Open Flashcards →</span>
+  </a>
+
+  <a class="resource-card amber" href="Class1_IntroToTesting_Presentation.html">
+    <div class="card-icon">▶</div>
+    <div class="card-type amber">Slides</div>
+    <div class="card-title">Presentation</div>
+    <div class="card-desc">The complete 23-slide class presentation. Review the full lesson at your own pace with keyboard navigation and progress tracking.</div>
+    <div class="card-meta">
+      <span class="meta-pill meta-amber">23 slides</span>
+      <span class="meta-pill meta-amber">Full lesson</span>
+      <span class="meta-pill meta-amber">← → navigate</span>
+    </div>
+    <span class="card-btn btn-amber">Open Slides →</span>
+  </a>
+
+</div>
+
+<div class="divider-section">
+  <div class="section-label">Topics covered in Class 1</div>
+</div>
+
+<div class="topics-grid">
+  <div class="topic-chip"><div class="topic-dot" style="background:var(--blue)"></div><span class="topic-text">Why testing matters</span></div>
+  <div class="topic-chip"><div class="topic-dot" style="background:var(--blue)"></div><span class="topic-text">Cost of bugs in production</span></div>
+  <div class="topic-chip"><div class="topic-dot" style="background:var(--blue)"></div><span class="topic-text">Manual vs automated testing</span></div>
+  <div class="topic-chip"><div class="topic-dot" style="background:var(--green)"></div><span class="topic-text">AAA Pattern — Arrange, Act, Assert</span></div>
+  <div class="topic-chip"><div class="topic-dot" style="background:var(--green)"></div><span class="topic-text">@Test and @Before annotations</span></div>
+  <div class="topic-chip"><div class="topic-dot" style="background:var(--green)"></div><span class="topic-text">assertEquals and assertTrue</span></div>
+  <div class="topic-chip"><div class="topic-dot" style="background:var(--amber)"></div><span class="topic-text">The Testing Pyramid</span></div>
+  <div class="topic-chip"><div class="topic-dot" style="background:var(--amber)"></div><span class="topic-text">Unit Tests vs UI Tests</span></div>
+  <div class="topic-chip"><div class="topic-dot" style="background:var(--amber)"></div><span class="topic-text">Integration Tests</span></div>
+  <div class="topic-chip"><div class="topic-dot" style="background:var(--purple)"></div><span class="topic-text">JUnit 4 — the unit test tool</span></div>
+  <div class="topic-chip"><div class="topic-dot" style="background:var(--purple)"></div><span class="topic-text">Espresso and Compose Testing</span></div>
+  <div class="topic-chip"><div class="topic-dot" style="background:var(--purple)"></div><span class="topic-text">testTag — finding UI elements</span></div>
+  <div class="topic-chip"><div class="topic-dot" style="background:var(--red)"></div><span class="topic-text">Test project folder structure</span></div>
+  <div class="topic-chip"><div class="topic-dot" style="background:var(--red)"></div><span class="topic-text">QA Engineer vs Developer roles</span></div>
+  <div class="topic-chip"><div class="topic-dot" style="background:var(--red)"></div><span class="topic-text">Bug Life Cycle</span></div>
+</div>
+
+<div class="footer">
+  <p>Android Testing Course &nbsp;·&nbsp; Class 1 — Introduction to Android Testing &nbsp;·&nbsp; <a href="https://developer.android.com/training/testing" target="_blank">Android Testing Docs ↗</a></p>
+</div>
+
+</body>
+</html>
