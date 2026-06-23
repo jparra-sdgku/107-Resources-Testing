@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Class 1 — Glossary</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0D1117;--bg2:#161B22;--bg3:#21262D;--bg4:#30363D;
+  --border:#30363D;--border2:#484F58;
+  --text:#E6EDF3;--text2:#8B949E;--text3:#6E7681;
+  --blue:#58A6FF;--blue2:#1F6FEB;--blue-bg:#0D2137;
+  --green:#3FB950;--green2:#196C2E;--green-bg:#0A1F0D;
+  --amber:#D29922;--amber-bg:#1F1700;
+  --purple:#BC8CFF;--purple-bg:#1A0F2E;
+  --red:#F85149;--red-bg:#1A0707;--red2:#5A1515;
+  --mono:'Courier New',monospace;
+}
+html,body{min-height:100%;margin:0;padding:0;background:var(--bg);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;color:var(--text)}
+.topbar{background:var(--bg2);border-bottom:0.5px solid var(--border);padding:14px 40px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100}
+.dots{display:flex;gap:8px}
+.dot{width:13px;height:13px;border-radius:50%}
+.dot-r{background:#FF5F56}.dot-y{background:#FEBC2E}.dot-g{background:#27C93F}
+.file-tab{font-size:13px;color:var(--text2);font-family:var(--mono);background:var(--bg3);padding:5px 14px;border-radius:4px;border:0.5px solid var(--border)}
+.nav-links{display:flex;gap:10px}
+.nav-link{font-size:13px;padding:6px 16px;border:0.5px solid var(--border2);border-radius:6px;background:var(--bg3);color:var(--text2);cursor:pointer;text-decoration:none;transition:all .15s;font-family:inherit}
+.nav-link:hover{background:var(--bg4);color:var(--text);border-color:var(--blue2)}
+.nav-link.active{background:var(--blue-bg);color:var(--blue);border-color:var(--blue2)}
+.container{max-width:900px;margin:0 auto;padding:40px 40px 80px}
+.hero{margin-bottom:40px}
+.hero-tag{display:inline-block;font-size:11px;font-family:var(--mono);padding:3px 10px;border-radius:4px;margin-bottom:12px;font-weight:500;background:var(--blue-bg);color:var(--blue);border:0.5px solid var(--blue2)}
+.hero h1{font-size:32px;font-weight:600;color:var(--text);margin-bottom:8px}
+.hero p{font-size:15px;color:var(--text2);line-height:1.6}
+.search-box{margin-bottom:32px}
+.search-input{width:100%;background:var(--bg2);border:0.5px solid var(--border2);border-radius:8px;padding:12px 16px;font-size:14px;color:var(--text);font-family:inherit;outline:none;transition:border-color .2s}
+.search-input:focus{border-color:var(--blue2)}
+.search-input::placeholder{color:var(--text3)}
+.alpha-nav{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:32px}
+.alpha-btn{font-size:12px;padding:4px 10px;border:0.5px solid var(--border);border-radius:4px;background:var(--bg2);color:var(--text3);cursor:pointer;font-family:var(--mono);transition:all .15s;text-decoration:none}
+.alpha-btn:hover{border-color:var(--blue2);color:var(--blue)}
+.section{margin-bottom:40px}
+.section-letter{font-size:11px;font-family:var(--mono);font-weight:700;color:var(--text3);letter-spacing:.1em;text-transform:uppercase;padding:6px 0;border-bottom:0.5px solid var(--border);margin-bottom:16px}
+.term-card{background:var(--bg2);border:0.5px solid var(--border);border-radius:10px;padding:20px 24px;margin-bottom:12px;transition:border-color .2s;scroll-margin-top:80px}
+.term-card:hover{border-color:var(--border2)}
+.term-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.term-name{font-size:16px;font-weight:600;font-family:var(--mono);color:var(--blue)}
+.term-badge{font-size:10px;padding:2px 8px;border-radius:4px;font-family:var(--mono);font-weight:600}
+.badge-annotation{background:var(--amber-bg);color:var(--amber);border:0.5px solid #5C4000}
+.badge-concept{background:var(--blue-bg);color:var(--blue);border:0.5px solid var(--blue2)}
+.badge-pattern{background:var(--green-bg);color:var(--green);border:0.5px solid var(--green2)}
+.badge-tool{background:var(--purple-bg);color:var(--purple);border:0.5px solid #5A2D9E}
+.badge-assertion{background:var(--red-bg);color:var(--red);border:0.5px solid var(--red2)}
+.badge-role{background:var(--bg3);color:var(--text2);border:0.5px solid var(--border2)}
+.term-def{font-size:14px;color:var(--text2);line-height:1.7;margin-bottom:12px}
+.term-example{background:var(--bg3);border-left:3px solid var(--blue2);border-radius:0 6px 6px 0;padding:10px 14px;font-size:13px;color:var(--text2);font-family:var(--mono);line-height:1.6;margin-bottom:12px}
+.term-footer{display:flex;align-items:center;justify-content:space-between}
+.term-related{font-size:12px;color:var(--text3)}
+.term-related span{color:var(--text2)}
+.flashcard-link{font-size:12px;padding:4px 10px;border:0.5px solid var(--blue2);border-radius:4px;background:var(--blue-bg);color:var(--blue);text-decoration:none;cursor:pointer;transition:all .15s}
+.flashcard-link:hover{background:var(--blue2);color:var(--white)}
+.no-results{text-align:center;padding:60px 0;color:var(--text3);font-size:15px}
+.stats{display:flex;gap:20px;margin-bottom:32px}
+.stat{background:var(--bg2);border:0.5px solid var(--border);border-radius:8px;padding:14px 20px;flex:1;text-align:center}
+.stat-num{font-size:28px;font-weight:700;color:var(--blue);font-family:var(--mono)}
+.stat-label{font-size:12px;color:var(--text3);margin-top:4px}
+</style>
+</head>
+<body>
+<div class="topbar">
+  <div class="dots"><div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div></div>
+  <div class="file-tab">Class1_Glossary.html</div>
+  <div class="nav-links">
+    <a class="nav-link active" href="Class1_Glossary.html">📖 Glossary</a>
+    <a class="nav-link" href="Class1_Flashcards.html">🃏 Flashcards</a>
+    <a class="nav-link" href="Class1_IntroToTesting_Presentation.html">▶ Presentation</a>
+  </div>
+</div>
+
+<div class="container">
+  <div class="hero">
+    <div class="hero-tag">// Class 1 — Introduction to Android Testing</div>
+    <h1>Glossary</h1>
+    <p>All key terms and concepts from Class 1. Click <strong style="color:var(--blue)">View Flashcard</strong> next to any term to practice it, or open the <a href="Class1_Flashcards.html" style="color:var(--blue)">Flashcards</a> to study all terms at once.</p>
+  </div>
+
+  <div class="stats">
+    <div class="stat"><div class="stat-num" id="total-count">24</div><div class="stat-label">Total terms</div></div>
+    <div class="stat"><div class="stat-num" style="color:var(--green)">6</div><div class="stat-label">Categories</div></div>
+    <div class="stat"><div class="stat-num" style="color:var(--amber)">1</div><div class="stat-label">Class</div></div>
+  </div>
+
+  <div class="search-box">
+    <input class="search-input" type="text" id="search" placeholder="Search terms..." oninput="filterTerms()" />
+  </div>
+
+  <div class="alpha-nav" id="alpha-nav">
+    <a class="alpha-btn" href="#A">A</a>
+    <a class="alpha-btn" href="#B">B</a>
+    <a class="alpha-btn" href="#C">C</a>
+    <a class="alpha-btn" href="#D">D</a>
+    <a class="alpha-btn" href="#E">E</a>
+    <a class="alpha-btn" href="#I">I</a>
+    <a class="alpha-btn" href="#J">J</a>
+    <a class="alpha-btn" href="#M">M</a>
+    <a class="alpha-btn" href="#Q">Q</a>
+    <a class="alpha-btn" href="#R">R</a>
+    <a class="alpha-btn" href="#T">T</a>
+    <a class="alpha-btn" href="#U">U</a>
+  </div>
+
+  <div id="glossary-content">
+
+    <!-- A -->
+    <div class="section" id="A">
+      <div class="section-letter">A</div>
+
+      <div class="term-card" id="term-arrange">
+        <div class="term-header">
+          <span class="term-name">Arrange</span>
+          <span class="term-badge badge-pattern">Pattern</span>
+        </div>
+        <div class="term-def">The first step of the AAA pattern. Set up everything the test needs before running it — create objects, set the initial state, and prepare the inputs. Think of it as the "before" state of the test.</div>
+        <div class="term-example">val viewModel = TodoViewModel()  // Arrange: create a fresh ViewModel</div>
+        <div class="term-footer">
+          <span class="term-related">Related: <span><a href="#term-aaa" style="color:var(--blue);text-decoration:none">AAA Pattern</a>, <span><a href="#term-act" style="color:var(--blue);text-decoration:none">Act</a></span>, <a href="#term-assert" style="color:var(--blue);text-decoration:none">Assert</a></span></span>
+          <a class="flashcard-link" href="Class1_Flashcards.html#card-arrange">View Flashcard →</a>
+        </div>
+      </div>
+
+      <div class="term-card" id="term-act">
+        <div class="term-header">
+          <span class="term-name">Act</span>
+          <span class="term-badge badge-pattern">Pattern</span>
+        </div>
+        <div class="term-def">The second step of the AAA pattern. Call the function or perform the action you want to test. Each test should have only one Act — one single thing being verified.</div>
+        <div class="term-example">viewModel.addTask("Buy Groceries")  // Act: call the function under test</div>
+        <div class="term-footer">
+          <span class="term-related">Related: <span><a href="#term-aaa" style="color:var(--blue);text-decoration:none">AAA Pattern</a>, <a href="#term-arrange" style="color:var(--blue);text-decoration:none">Arrange</a>, <a href="#term-assert" style="color:var(--blue);text-decoration:none">Assert</a></span></span>
+          <a class="flashcard-link" href="Class1_Flashcards.html#card-act">View Flashcard →</a>
+        </div>
+      </div>
+
+      <div class="term-card" id="term-aaa">
+        <div class="term-header">
+          <span class="term-name">AAA Pattern</span>
+          <span class="term-badge badge-pattern">Pattern</span>
+        </div>
+        <div class="term-def">Arrange, Act, Assert — the three-step structure that every well-written test follows. It makes tests easy to read, understand, and maintain. The pattern separates setup, execution, and verification into clear phases.</div>
+        <div class="term-example">val vm = TodoViewModel()         // Arrange
+vm.addTask("Buy Groceries")      // Act
+assertEquals(1, vm.getTaskCount()) // Assert</div>
+        <div class="term-footer">
+          <span class="term-related">Related: <span><a href="#term-arrange" style="color:var(--blue);text-decoration:none">Arrange</a>, <a href="#term-act" style="color:var(--blue);text-decoration:none">Act</a>, <a href="#term-assert" style="color:var(--blue);text-decoration:none">Assert</a></span></span>
+          <a class="flashcard-link" href="Class1_Flashcards.html#card-aaa">View Flashcard →</a>
+        </div>
+      </div>
+
+      <div class="term-card" id="term-assert">
+        <div class="term-header">
+          <span class="term-name">Assert</span>
+          <span class="term-badge badge-pattern">Pattern</span>
+        </div>
+        <div class="term-def">The third step of the AAA pattern. Check that the result is what you expected using assertions. If the assertion fails, the test fails and reports exactly what went wrong.</div>
+        <div class="term-example">assertEquals(1, viewModel.getTaskCount())  // Assert: check the result</div>
+        <div class="term-footer">
+          <span class="term-related">Related: <span><a href="#term-aaa" style="color:var(--blue);text-decoration:none">AAA Pattern</a>, <a href="#term-assertion" style="color:var(--blue);text-decoration:none">Assertion</a></span></span>
+          <a class="flashcard-link" href="Class1_Flashcards.html#card-assert">View Flashcard →</a>
+        </div>
+      </div>
+
+      <div class="term-card" id="term-assertion">
+        <div class="term-header">
+          <span class="term-name">Assertion</span>
+          <span class="term-badge badge-assertion">Assertion</span>
+        </div>
+        <div class="term-def">A check inside a test that verifies a specific condition. It says "I expect this value to be X." If the condition is not met, the test fails immediately and reports the expected vs actual value. JUnit provides many assertion functions like assertEquals, assertTrue, assertFalse, and assertNotNull.</div>
+        <div class="term-example">assertEquals(5, result)      // fails if result is not 5
+assertTrue(list.isNotEmpty()) // fails if list is empty</div>
+        <div class="term-footer">
+          <span class="term-related">Related: <span><a href="#term-assertEquals" style="color:var(--blue);text-decoration:none">assertEquals</a>, <a href="#term-assertTrue" style="color:var(--blue);text-decoration:none">assertTrue</a></span></span>
+          <a class="flashcard-link" href="Class1_Flashcards.html#card-assertion">View Flashcard →</a>
+        </div>
+      </div>
+
+      <div class="term-card" id="term-assertEquals">
+        <div class="term-header">
+          <span class="term-name">assertEquals</span>
+          <span class="term-badge badge-assertion">Assertion</span>
+        </div>
+        <div class="term-def">A JUnit assertion that checks whether two values are equal. Takes two parameters: the expected value first, then the actual value. If they are not equal, the test fails with a message showing what was expected and what was actually received. Order matters — always put the expected value first.</div>
+        <div class="term-example">assertEquals(1, viewModel.getTaskCount())
+// expected: 1 — actual: viewModel.getTaskCount()
+// fails with: "expected: &lt;1&gt; but was: &lt;0&gt;"</div>
+        <div class="term-footer">
+          <span class="term-related">Related: <span><a href="#term-assertion" style="color:var(--blue);text-decoration:none">Assertion</a>, <a href="#term-assertTrue" style="color:var(--blue);text-decoration:none">assertTrue</a></span></span>
+          <a class="flashcard-link" href="Class1_Flashcards.html#card-assertEquals">View Flashcard →</a>
+        </div>
+      </div>
+
+      <div class="term-card" id="term-assertTrue">
+        <div class="term-header">
+          <span class="term-name">assertTrue</span>
+          <span class="term-badge badge-assertion">Assertion</span>
+        </div>
+        <div class="term-def">A JUnit assertion that checks whether a condition is true. Takes one parameter — any expression that returns a Boolean. If the expression returns false, the test fails. More readable than assertEquals(true, ...) for boolean checks.</div>
+        <div class="term-example">assertTrue(viewModel.containsTask("Buy Groceries"))
+// passes if containsTask() returns true
+// fails if containsTask() returns false</div>
+        <div class="term-footer">
+          <span class="term-related">Related: <span><a href="#term-assertion" style="color:var(--blue);text-decoration:none">Assertion</a>, <a href="#term-assertEquals" style="color:var(--blue);text-decoration:none">assertEquals</a></span></span>
+          <a class="flashcard-link" href="Class1_Flashcards.html#card-assertTrue">View Flashcard →</a>
+        </div>
+      </div>
+
+      <div class="term-card" id="term-automated-testing">
+        <div class="term-header">
+          <span class="term-name">Automated Testing</span>
+          <span class="term-badge badge-concept">Concept</span>
+        </div>
+        <div class="term-def">Tests written in code that run automatically without human intervention. Automated tests are faster, more consistent, and can run on every code change 24 hours a day. They catch regressions immediately and cover edge cases that humans often forget to test manually.</div>
+        <div class="term-example">// Runs automatically when you push code:
+./gradlew test  // runs all unit tests in seconds</div>
+        <div class="term-footer">
+          <span class="term-related">Related: <span><a href="#term-manual-testing" style="color:var(--blue);text-decoration:none">Manual Testing</a>, <a href="#term-regression" style="color:var(--blue);text-decoration:none">Regression</a></span></span>
+          <a class="flashcard-link" href="Class1_Flashcards.html#card-automated-testing">View Flashcard →</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- B -->
+    <div class="section" id="B">
+      <div class="section-letter">B</div>
+
+      <div class="term-card" id="term-bug-lifecycle">
+        <div class="term-header">
+          <span class="term-name">Bug Life Cycle</span>
+          <span class="term-badge badge-concept">Concept</span>
+        </div>
+        <div class="term-def">The predictable journey every bug takes from discovery to resolution: Found → Reported → Assigned → Fixed → Verified → Closed. Understanding this cycle is fundamental for anyone working in QA or software development. The developer often writes an automated test when fixing a bug to prevent it from coming back.</div>
+        <div class="term-example">// Bug life cycle in practice:
+// 1. Found: "App crashes when adding a blank task"
+// 2. Reported: screenshot + steps to reproduce
+// 3. Assigned: developer investigates
+// 4. Fixed: add isNotBlank() check + write a test for it
+// 5. Verified: QA confirms fix works
+// 6. Closed: removed from backlog</div>
+        <div class="term-footer">
+          <span class="term-related">Related: <span><a href="#term-regression" style="color:var(--blue);text-decoration:none">Regression</a>, <a href="#term-qa-engineer" style="color:var(--blue);text-decoration:none">QA Engineer</a></span></span>
+          <a class="flashcard-link" href="Class1_Flashcards.html#card-bug-lifecycle">View Flashcard →</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- C -->
+    <div class="section" id="C">
+      <div class="section-letter">C</div>
+
+      <div class="term-card" id="term-code-coverage">
+        <div class="term-header">
+          <span class="term-name">Code Coverage</span>
+          <span class="term-badge badge-concept">Concept</span>
+        </div>
+        <div class="term-def">The percentage of your code that is executed by your tests. 80% coverage means 80% of your code is tested by at least one test. Higher coverage generally means fewer untested paths where bugs can hide. Coverage is a useful metric but not the only indicator of test quality — 100% coverage does not mean the tests are well written.</div>
+        <div class="term-example">// If addTask() has 3 lines and your tests execute all 3:
+// Coverage for addTask() = 100%
+// If only 2 lines are executed: Coverage = 66%</div>
+        <div class="term-footer">
+          <span class="term-related">Related: <span><a href="#term-unit-test" style="color:var(--blue);text-decoration:none">Unit Test</a>, <a href="#term-test-case" style="color:var(--blue);text-decoration:none">Test Case</a></span></span>
+          <a class="flashcard-link" href="Class1_Flashcards.html#card-code-coverage">View Flashcard →</a>
+        </div>
+      </div>
+
+      <div class="term-card" id="term-compose-testing">
+        <div class="term-header">
+          <span class="term-name">Compose Testing</span>
+          <span class="term-badge badge-tool">Tool</span>
+        </div>
+        <div class="term-def">The testing library for Jetpack Compose UI tests. It works alongside Espresso and provides a modern API for interacting with composable functions. Uses composeTestRule to launch composables in a test environment, and functions like onNodeWithTag, onNodeWithText, performClick, and assertIsDisplayed to simulate user interactions and verify what appears on screen.</div>
+        <div class="term-example">composeTestRule
+    .onNodeWithTag("addButton")
+    .performClick()
+composeTestRule
+    .onNodeWithText("Buy Groceries")
+    .assertIsDisplayed()</div>
+        <div class="term-footer">
+          <span class="term-related">Related: <span><a href="#term-espresso" style="color:var(--blue);text-decoration:none">Espresso</a>, <a href="#term-testTag" style="color:var(--blue);text-decoration:none">testTag</a>, <a href="#term-ui-test" style="color:var(--blue);text-decoration:none">UI Test</a></span></span>
+          <a class="flashcard-link" href="Class1_Flashcards.html#card-compose-testing">View Flashcard →</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- D -->
+    <div class="section" id="D">
+      <div class="section-letter">D</div>
+
+      <div class="term-card" id="term-developer-testing">
+        <div class="term-header">
+          <span class="term-name">Developer Testing</span>
+          <span class="term-badge badge-role">Role</span>
+        </div>
+        <div class="term-def">Testing done by the developer who wrote the code. Focuses on logic correctness using unit and integration tests. Tests run automatically as part of the development workflow. The goal is to verify that the code does exactly what it is supposed to do — not to find bugs from a user's perspective.</div>
+        <div class="term-example">// Developer writes tests for their own functions:
+@Test fun addTask_withValidTitle_appearsInList()
+@Test fun addTask_withBlankTitle_isIgnored()
+@Test fun removeTask_removesCorrectItem()</div>
+        <div class="term-footer">
+          <span class="term-related">Related: <span><a href="#term-qa-engineer" style="color:var(--blue);text-decoration:none">QA Engineer</a>, <a href="#term-unit-test" style="color:var(--blue);text-decoration:none">Unit Test</a></span></span>
+          <a class="flashcard-link" href="Class1_Flashcards.html#card-developer-testing">View Flashcard →</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- E -->
+    <div class="section" id="E">
+      <div class="section-letter">E</div>
+
+      <div class="term-card" id="term-espresso">
+        <div class="term-header">
+          <span class="term-name">Espresso</span>
+          <span class="term-badge badge-tool">Tool</span>
+        </div>
+        <div class="term-def">Google's official framework for writing UI tests in Android. It simulates real user actions — tapping, typing, scrolling — and verifies what appears on screen. Since this course uses Jetpack Compose, we use the Compose Testing library which is built on top of Espresso. UI tests using Espresso require a running emulator or device.</div>
+        <div class="term-example">// Espresso / Compose Testing in androidTest/:
+composeTestRule.onNodeWithTag("inputField")
+    .performTextInput("Buy Groceries")
+composeTestRule.onNodeWithTag("addButton")
+    .performClick()</div>
+        <div class="term-footer">
+          <span class="term-related">Related: <span><a href="#term-compose-testing" style="color:var(--blue);text-decoration:none">Compose Testing</a>, <a href="#term-ui-test" style="color:var(--blue);text-decoration:none">UI Test</a>, <a href="#term-junit" style="color:var(--blue);text-decoration:none">JUnit 4</a></span></span>
+          <a class="flashcard-link" href="Class1_Flashcards.html#card-espresso">View Flashcard →</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- I -->
+    <div class="section" id="I">
+      <div class="section-letter">I</div>
+
+      <div class="term-card" id="term-integration-test">
+        <div class="term-header">
+          <span class="term-name">Integration Test</span>
+          <span class="term-badge badge-concept">Concept</span>
+        </div>
+        <div class="term-def">A test that checks multiple components working together correctly — not each piece in isolation, but the connections between pieces. For example, verifying that the ViewModel correctly saves a task to the database AND retrieves it back. Slower than unit tests and often requires some Android APIs. Lives in src/androidTest/java/.</div>
+        <div class="term-example">// Integration test — tests ViewModel + Repository + Database together:
+@Test fun addTask_savesToDatabase_andRetrievesCorrectly() {
+    viewModel.addTask("Buy Groceries")
+    val fromDb = repository.getAll()
+    assertEquals("Buy Groceries", fromDb[0].title)
+}</div>
+        <div class="term-footer">
+          <span class="term-related">Related: <span><a href="#term-unit-test" style="color:var(--blue);text-decoration:none">Unit Test</a>, <a href="#term-ui-test" style="color:var(--blue);text-decoration:none">UI Test</a>, <a href="#term-testing-pyramid" style="color:var(--blue);text-decoration:none">Testing Pyramid</a></span></span>
+          <a class="flashcard-link" href="Class1_Flashcards.html#card-integration-test">View Flashcard →</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- J -->
+    <div class="section" id="J">
+      <div class="section-letter">J</div>
+
+      <div class="term-card" id="term-junit">
+        <div class="term-header">
+          <span class="term-name">JUnit 4</span>
+          <span class="term-badge badge-tool">Tool</span>
+        </div>
+        <div class="term-def">The standard testing framework for Java and Kotlin. In Android, it is used to write unit tests for classes and functions that do not depend on Android-specific components. JUnit finds all functions marked with @Test and runs them automatically, reporting results with green checkmarks (pass) or red X marks (fail). Runs on the JVM — no device or emulator needed.</div>
+        <div class="term-example">// JUnit test in src/test/java/:
+@Test
+fun addition_isCorrect() {
+    assertEquals(4, 2 + 2)  // passes instantly, no device needed
+}</div>
+        <div class="term-footer">
+          <span class="term-related">Related: <span><a href="#term-test-annotation" style="color:var(--blue);text-decoration:none">@Test</a>, <a href="#term-assertion" style="color:var(--blue);text-decoration:none">Assertion</a>, <a href="#term-unit-test" style="color:var(--blue);text-decoration:none">Unit Test</a></span></span>
+          <a class="flashcard-link" href="Class1_Flashcards.html#card-junit">View Flashcard →</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- M -->
+    <div class="section" id="M">
+      <div class="section-letter">M</div>
+
+      <div class="term-card" id="term-manual-testing">
+        <div class="term-header">
+          <span class="term-name">Manual Testing</span>
+          <span class="term-badge badge-concept">Concept</span>
+        </div>
+        <div class="term-def">Testing done by a human who opens the app and clicks through it manually. It feels natural but has serious limitations: it is slow, inconsistent, misses regressions, and cannot run automatically. Manual testing is best for exploratory testing and UX evaluation. It cannot replace automated testing for ensuring code quality over time.</div>
+        <div class="term-example">// Manual testing: developer opens app, types "Buy Groceries", taps Add
+// Problem: developer might forget to test the blank title case
+// Solution: automated test always covers every case, every time</div>
+        <div class="term-footer">
+          <span class="term-related">Related: <span><a href="#term-automated-testing" style="color:var(--blue);text-decoration:none">Automated Testing</a>, <a href="#term-regression" style="color:var(--blue);text-decoration:none">Regression</a></span></span>
+          <a class="flashcard-link" href="Class1_Flashcards.html#card-manual-testing">View Flashcard →</a>
+        </div>
+      </div>
+
+      <div class="term-card" id="term-mock">
+        <div class="term-header">
+          <span class="term-name">Mock</span>
+          <span class="term-badge badge-concept">Concept</span>
+        </div>
+        <div class="term-def">A fake object that replaces a real one during testing. Mocks allow you to test your code in isolation without depending on external systems like databases, networks, or APIs. For example, a mock database always returns the same fixed data so you can test your logic without connecting to a real database.</div>
+        <div class="term-example">// Real database: slow, requires setup, unpredictable
+// Mock database: instant, always returns what you tell it to
+val mockRepository = MockTodoRepository()
+mockRepository.returnTasks(listOf(Task(1, "Buy Groceries")))</div>
+        <div class="term-footer">
+          <span class="term-related">Related: <span><a href="#term-unit-test" style="color:var(--blue);text-decoration:none">Unit Test</a>, <a href="#term-integration-test" style="color:var(--blue);text-decoration:none">Integration Test</a></span></span>
+          <a class="flashcard-link" href="Class1_Flashcards.html#card-mock">View Flashcard →</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Q -->
+    <div class="section" id="Q">
+      <div class="section-letter">Q</div>
+
+      <div class="term-card" id="term-qa-engineer">
+        <div class="term-header">
+          <span class="term-name">QA Engineer</span>
+          <span class="term-badge badge-role">Role</span>
+        </div>
+        <div class="term-def">Quality Assurance Engineer — a professional who tests the whole product from the user's perspective. Unlike developer testing which focuses on code correctness, QA engineers find edge cases that developers missed and verify the full user experience. They write test cases, report bugs with detailed steps to reproduce, and verify fixes. A well-paid and valuable career path in software development.</div>
+        <div class="term-example">// QA Engineer finds:
+// "The app crashes when you paste text instead of typing"
+// — an edge case the developer never thought to test manually</div>
+        <div class="term-footer">
+          <span class="term-related">Related: <span><a href="#term-developer-testing" style="color:var(--blue);text-decoration:none">Developer Testing</a>, <a href="#term-bug-lifecycle" style="color:var(--blue);text-decoration:none">Bug Life Cycle</a></span></span>
+          <a class="flashcard-link" href="Class1_Flashcards.html#card-qa-engineer">View Flashcard →</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- R -->
+    <div class="section" id="R">
+      <div class="section-letter">R</div>
+
+      <div class="term-card" id="term-regression">
+        <div class="term-header">
+          <span class="term-name">Regression</span>
+          <span class="term-badge badge-concept">Concept</span>
+        </div>
+        <div class="term-def">When a new code change breaks something that used to work correctly. Regressions are one of the most common and frustrating bugs in software development — they appear in code that was already working. Automated tests catch regressions the moment they happen, because the tests for the previously working feature will now fail.</div>
+        <div class="term-example">// addTask() worked fine last week
+// Developer changes Task.kt to add a new field
+// Now addTask() silently fails — a regression
+// The unit test for addTask() fails immediately → regression caught</div>
+        <div class="term-footer">
+          <span class="term-related">Related: <span><a href="#term-automated-testing" style="color:var(--blue);text-decoration:none">Automated Testing</a>, <a href="#term-unit-test" style="color:var(--blue);text-decoration:none">Unit Test</a></span></span>
+          <a class="flashcard-link" href="Class1_Flashcards.html#card-regression">View Flashcard →</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- T -->
+    <div class="section" id="T">
+      <div class="section-letter">T</div>
+
+      <div class="term-card" id="term-test-annotation">
+        <div class="term-header">
+          <span class="term-name">@Test</span>
+          <span class="term-badge badge-annotation">Annotation</span>
+        </div>
+        <div class="term-def">A JUnit annotation that marks a Kotlin function as a test. JUnit scans the test class for all functions marked with @Test and runs them automatically. Without @Test, the function is just a regular Kotlin function that JUnit will never find or run. Always required on every test function.</div>
+        <div class="term-example">@Test  // ← JUnit sees this and runs the function automatically
+fun addTask_withValidTitle_appearsInList() {
+    // test code here
+}
+
+fun helperFunction() {  // ← No @Test — JUnit ignores this
+    // utility code
+}</div>
+        <div class="term-footer">
+          <span class="term-related">Related: <span><a href="#term-junit" style="color:var(--blue);text-decoration:none">JUnit 4</a>, <a href="#term-before-annotation" style="color:var(--blue);text-decoration:none">@Before</a></span></span>
+          <a class="flashcard-link" href="Class1_Flashcards.html#card-test-annotation">View Flashcard →</a>
+        </div>
+      </div>
+
+      <div class="term-card" id="term-before-annotation">
+        <div class="term-header">
+          <span class="term-name">@Before</span>
+          <span class="term-badge badge-annotation">Annotation</span>
+        </div>
+        <div class="term-def">A JUnit annotation that marks a function to run automatically before every single @Test function in the class. Used to set up the initial state that all tests need — like creating a fresh instance of the class being tested. Runs once per test, not once per class, ensuring each test starts from the same clean state.</div>
+        <div class="term-example">@Before
+fun setUp() {
+    viewModel = TodoViewModel()  // fresh ViewModel before EVERY test
+}
+// This runs before addTask_test(), before removeTask_test(), before ALL tests</div>
+        <div class="term-footer">
+          <span class="term-related">Related: <span><a href="#term-test-annotation" style="color:var(--blue);text-decoration:none">@Test</a>, <a href="#term-junit" style="color:var(--blue);text-decoration:none">JUnit 4</a></span></span>
+          <a class="flashcard-link" href="Class1_Flashcards.html#card-before-annotation">View Flashcard →</a>
+        </div>
+      </div>
+
+      <div class="term-card" id="term-test-case">
+        <div class="term-header">
+          <span class="term-name">Test Case</span>
+          <span class="term-badge badge-concept">Concept</span>
+        </div>
+        <div class="term-def">One specific scenario being tested. A single function can have multiple test cases — one for the normal case and one or more for edge cases. For example, addTask() has test cases for a valid title, a blank title, a title with spaces, and an empty string. Each test case is a separate @Test function.</div>
+        <div class="term-example">// Test cases for addTask():
+@Test fun addTask_withValidTitle_appearsInList()  // normal case
+@Test fun addTask_withBlankTitle_isIgnored()      // edge case
+@Test fun addTask_titleIsTrimmed()               // edge case
+@Test fun addTask_withEmptyString_isIgnored()    // edge case</div>
+        <div class="term-footer">
+          <span class="term-related">Related: <span><a href="#term-unit-test" style="color:var(--blue);text-decoration:none">Unit Test</a>, <a href="#term-test-annotation" style="color:var(--blue);text-decoration:none">@Test</a></span></span>
+          <a class="flashcard-link" href="Class1_Flashcards.html#card-test-case">View Flashcard →</a>
+        </div>
+      </div>
+
+      <div class="term-card" id="term-testing-pyramid">
+        <div class="term-header">
+          <span class="term-name">Testing Pyramid</span>
+          <span class="term-badge badge-concept">Concept</span>
+        </div>
+        <div class="term-def">The industry-standard model for how many tests to write at each level. Wide at the bottom (many unit tests), narrower in the middle (fewer integration tests), narrow at the top (few UI tests). The shape communicates that unit tests are fastest and cheapest, while UI tests are slowest and most expensive to maintain.</div>
+        <div class="term-example">//        ▲  UI Tests (few — slow, need emulator)
+//       ▲▲▲  Integration Tests (some — medium speed)
+//     ▲▲▲▲▲▲▲  Unit Tests (many — fast, no device)</div>
+        <div class="term-footer">
+          <span class="term-related">Related: <span><a href="#term-unit-test" style="color:var(--blue);text-decoration:none">Unit Test</a>, <a href="#term-integration-test" style="color:var(--blue);text-decoration:none">Integration Test</a>, <a href="#term-ui-test" style="color:var(--blue);text-decoration:none">UI Test</a></span></span>
+          <a class="flashcard-link" href="Class1_Flashcards.html#card-testing-pyramid">View Flashcard →</a>
+        </div>
+      </div>
+
+      <div class="term-card" id="term-testTag">
+        <div class="term-header">
+          <span class="term-name">testTag</span>
+          <span class="term-badge badge-tool">Tool</span>
+        </div>
+        <div class="term-def">A Jetpack Compose modifier that assigns a name to a composable element so that UI tests can find it reliably. Without testTag, UI tests have no guaranteed way to locate a specific element on screen. Added with .testTag("name") in the app code and accessed with onNodeWithTag("name") in tests. Names are case-sensitive.</div>
+        <div class="term-example">// In app code (TodoScreen.kt):
+OutlinedTextField(
+    modifier = Modifier.testTag("inputField")  // give it a name
+)
+// In test code (TodoScreenTest.kt):
+composeTestRule.onNodeWithTag("inputField")    // find it by name
+    .performTextInput("Buy Groceries")</div>
+        <div class="term-footer">
+          <span class="term-related">Related: <span><a href="#term-compose-testing" style="color:var(--blue);text-decoration:none">Compose Testing</a>, <a href="#term-ui-test" style="color:var(--blue);text-decoration:none">UI Test</a></span></span>
+          <a class="flashcard-link" href="Class1_Flashcards.html#card-testTag">View Flashcard →</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- U -->
+    <div class="section" id="U">
+      <div class="section-letter">U</div>
+
+      <div class="term-card" id="term-unit-test">
+        <div class="term-header">
+          <span class="term-name">Unit Test</span>
+          <span class="term-badge badge-concept">Concept</span>
+        </div>
+        <div class="term-def">A test that verifies a single function or class in complete isolation — no database, no network, no UI. It is the fastest and most numerous type of test in the Testing Pyramid. Unit tests run on the JVM (no device needed) in milliseconds. They are best for testing ViewModel logic, data transformations, and any function with clear inputs and outputs. Lives in src/test/java/.</div>
+        <div class="term-example">// Unit test — no emulator, runs in milliseconds:
+@Test
+fun addTask_withValidTitle_appearsInList() {
+    val viewModel = TodoViewModel()       // no Android framework needed
+    viewModel.addTask("Buy Groceries")
+    assertEquals(1, viewModel.getTaskCount())
+}</div>
+        <div class="term-footer">
+          <span class="term-related">Related: <span><a href="#term-junit" style="color:var(--blue);text-decoration:none">JUnit 4</a>, <a href="#term-integration-test" style="color:var(--blue);text-decoration:none">Integration Test</a>, <a href="#term-testing-pyramid" style="color:var(--blue);text-decoration:none">Testing Pyramid</a></span></span>
+          <a class="flashcard-link" href="Class1_Flashcards.html#card-unit-test">View Flashcard →</a>
+        </div>
+      </div>
+
+      <div class="term-card" id="term-ui-test">
+        <div class="term-header">
+          <span class="term-name">UI Test</span>
+          <span class="term-badge badge-concept">Concept</span>
+        </div>
+        <div class="term-def">A test that simulates a real user interacting with the app — typing, tapping buttons, scrolling — and verifies what appears on screen after each action. The slowest type of test in the pyramid because it requires a running emulator or device. Best for testing complete user flows and verifying that UI elements respond correctly. Lives in src/androidTest/java/.</div>
+        <div class="term-example">// UI test — needs a running emulator:
+@Test
+fun addTask_appearsInList() {
+    composeTestRule.onNodeWithTag("inputField")
+        .performTextInput("Buy Groceries")
+    composeTestRule.onNodeWithTag("addButton").performClick()
+    composeTestRule.onNodeWithText("Buy Groceries").assertIsDisplayed()
+}</div>
+        <div class="term-footer">
+          <span class="term-related">Related: <span><a href="#term-espresso" style="color:var(--blue);text-decoration:none">Espresso</a>, <a href="#term-compose-testing" style="color:var(--blue);text-decoration:none">Compose Testing</a>, <a href="#term-testTag" style="color:var(--blue);text-decoration:none">testTag</a></span></span>
+          <a class="flashcard-link" href="Class1_Flashcards.html#card-ui-test">View Flashcard →</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="no-results" id="no-results" style="display:none">
+      No terms found matching your search.
+    </div>
+
+  </div>
+</div>
+
+<script>
+function filterTerms() {
+  const q = document.getElementById('search').value.toLowerCase();
+  const cards = document.querySelectorAll('.term-card');
+  const sections = document.querySelectorAll('.section');
+  let total = 0;
+
+  cards.forEach(card => {
+    const name = card.querySelector('.term-name').textContent.toLowerCase();
+    const def = card.querySelector('.term-def').textContent.toLowerCase();
+    const match = name.includes(q) || def.includes(q);
+    card.style.display = match ? '' : 'none';
+    if (match) total++;
+  });
+
+  sections.forEach(sec => {
+    const visible = [...sec.querySelectorAll('.term-card')].some(c => c.style.display !== 'none');
+    sec.style.display = visible ? '' : 'none';
+  });
+
+  document.getElementById('no-results').style.display = total === 0 ? '' : 'none';
+  document.getElementById('alpha-nav').style.display = q ? 'none' : 'flex';
+}
+
+// Handle anchor links from flashcards
+window.addEventListener('load', () => {
+  const hash = window.location.hash;
+  if (hash) {
+    setTimeout(() => {
+      const el = document.querySelector(hash);
+      if (el) {
+        el.scrollIntoView({ behavior: 'smooth' });
+        el.style.borderColor = 'var(--blue)';
+        setTimeout(() => el.style.borderColor = '', 2000);
+      }
+    }, 100);
+  }
+});
+</script>
+</body>
+</html>

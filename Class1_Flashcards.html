@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Class 1 — Flashcards</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0D1117;--bg2:#161B22;--bg3:#21262D;--bg4:#30363D;
+  --border:#30363D;--border2:#484F58;
+  --text:#E6EDF3;--text2:#8B949E;--text3:#6E7681;
+  --blue:#58A6FF;--blue2:#1F6FEB;--blue-bg:#0D2137;
+  --green:#3FB950;--green2:#196C2E;--green-bg:#0A1F0D;
+  --amber:#D29922;--amber-bg:#1F1700;
+  --purple:#BC8CFF;--purple-bg:#1A0F2E;
+  --red:#F85149;--red-bg:#1A0707;--red2:#5A1515;
+  --mono:'Courier New',monospace;
+}
+html,body{height:100%;margin:0;padding:0;background:var(--bg);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;color:var(--text)}
+.topbar{background:var(--bg2);border-bottom:0.5px solid var(--border);padding:14px 40px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100}
+.dots{display:flex;gap:8px}
+.dot{width:13px;height:13px;border-radius:50%}
+.dot-r{background:#FF5F56}.dot-y{background:#FEBC2E}.dot-g{background:#27C93F}
+.file-tab{font-size:13px;color:var(--text2);font-family:var(--mono);background:var(--bg3);padding:5px 14px;border-radius:4px;border:0.5px solid var(--border)}
+.nav-links{display:flex;gap:10px}
+.nav-link{font-size:13px;padding:6px 16px;border:0.5px solid var(--border2);border-radius:6px;background:var(--bg3);color:var(--text2);cursor:pointer;text-decoration:none;transition:all .15s;font-family:inherit}
+.nav-link:hover{background:var(--bg4);color:var(--text);border-color:var(--blue2)}
+.nav-link.active{background:var(--blue-bg);color:var(--blue);border-color:var(--blue2)}
+
+/* Main layout */
+.main{display:grid;grid-template-rows:auto 1fr auto;height:calc(100vh - 57px)}
+.controls{padding:20px 40px;display:flex;align-items:center;justify-content:space-between;border-bottom:0.5px solid var(--border);background:var(--bg2)}
+.controls-left{display:flex;align-items:center;gap:12px}
+.controls-right{display:flex;align-items:center;gap:12px}
+.mode-btn{font-size:12px;padding:5px 12px;border:0.5px solid var(--border2);border-radius:6px;background:var(--bg3);color:var(--text2);cursor:pointer;transition:all .15s}
+.mode-btn:hover{border-color:var(--blue2);color:var(--blue)}
+.mode-btn.on{background:var(--blue-bg);color:var(--blue);border-color:var(--blue2)}
+.progress-bar{background:var(--bg3);border-radius:4px;height:4px;width:200px;overflow:hidden}
+.progress-fill{background:var(--blue);height:100%;transition:width .3s;border-radius:4px}
+.counter-text{font-size:13px;color:var(--text3);font-family:var(--mono)}
+
+/* Card area */
+.card-area{display:flex;align-items:center;justify-content:center;padding:40px;position:relative}
+.card-scene{width:680px;height:380px;perspective:1200px}
+.card-inner{width:100%;height:100%;position:relative;transform-style:preserve-3d;transition:transform 0.5s cubic-bezier(0.4,0,0.2,1);cursor:pointer}
+.card-inner.flipped{transform:rotateY(180deg)}
+.card-face{position:absolute;width:100%;height:100%;backface-visibility:hidden;border-radius:14px;display:flex;flex-direction:column;justify-content:center;align-items:center;padding:40px;text-align:center}
+.card-front{background:var(--bg2);border:0.5px solid var(--border2)}
+.card-back{background:var(--bg2);border:0.5px solid var(--border2);transform:rotateY(180deg)}
+.card-label{font-size:11px;font-family:var(--mono);font-weight:600;letter-spacing:.08em;color:var(--text3);text-transform:uppercase;margin-bottom:20px}
+.card-term{font-size:32px;font-weight:700;color:var(--text);font-family:var(--mono);margin-bottom:16px;line-height:1.2}
+.card-hint{font-size:13px;color:var(--text3);margin-top:16px}
+.card-badge{font-size:11px;padding:3px 10px;border-radius:4px;font-family:var(--mono);font-weight:600;margin-bottom:16px}
+.card-def{font-size:15px;color:var(--text2);line-height:1.7;max-width:560px;text-align:left}
+.card-example{background:var(--bg3);border-left:3px solid var(--blue2);border-radius:0 6px 6px 0;padding:10px 14px;font-size:12px;color:var(--text2);font-family:var(--mono);line-height:1.6;margin-top:16px;text-align:left;width:100%;max-width:560px;white-space:pre}
+.card-glossary-link{margin-top:16px;font-size:12px;color:var(--blue);text-decoration:none;border:0.5px solid var(--blue2);padding:4px 10px;border-radius:4px;background:var(--blue-bg);transition:all .15s}
+.card-glossary-link:hover{background:var(--blue2);color:var(--white)}
+
+/* Badge colors */
+.badge-annotation{background:var(--amber-bg);color:var(--amber);border:0.5px solid #5C4000}
+.badge-concept{background:var(--blue-bg);color:var(--blue);border:0.5px solid var(--blue2)}
+.badge-pattern{background:var(--green-bg);color:var(--green);border:0.5px solid var(--green2)}
+.badge-tool{background:var(--purple-bg);color:var(--purple);border:0.5px solid #5A2D9E}
+.badge-assertion{background:var(--red-bg);color:var(--red);border:0.5px solid var(--red2)}
+.badge-role{background:var(--bg3);color:var(--text2);border:0.5px solid var(--border2)}
+
+/* Navigation */
+.nav-row{padding:20px 40px;display:flex;align-items:center;justify-content:space-between;border-top:0.5px solid var(--border);background:var(--bg2)}
+.nav-btn{font-size:14px;padding:10px 24px;border:0.5px solid var(--border2);border-radius:8px;background:var(--bg3);color:var(--text2);cursor:pointer;transition:all .15s;font-family:inherit}
+.nav-btn:hover:not(:disabled){background:var(--bg4);color:var(--text);border-color:var(--blue2)}
+.nav-btn:disabled{opacity:.3;cursor:default}
+.flip-btn{font-size:14px;padding:10px 28px;border:0.5px solid var(--blue2);border-radius:8px;background:var(--blue-bg);color:var(--blue);cursor:pointer;transition:all .15s;font-family:inherit}
+.flip-btn:hover{background:var(--blue2);color:var(--text)}
+
+/* Result buttons */
+.result-btns{display:flex;gap:10px;margin-top:20px}
+.result-btn{font-size:13px;padding:8px 18px;border-radius:6px;cursor:pointer;font-family:inherit;border:none;transition:all .15s}
+.btn-again{background:var(--red-bg);color:var(--red);border:0.5px solid var(--red2)}
+.btn-again:hover{background:var(--red2);color:var(--text)}
+.btn-good{background:var(--green-bg);color:var(--green);border:0.5px solid var(--green2)}
+.btn-good:hover{background:var(--green2);color:var(--text)}
+
+/* Summary screen */
+.summary{display:none;flex-direction:column;align-items:center;justify-content:center;padding:60px;text-align:center}
+.summary h2{font-size:28px;font-weight:600;margin-bottom:16px}
+.summary p{font-size:16px;color:var(--text2);margin-bottom:32px}
+.summary-stats{display:flex;gap:24px;margin-bottom:40px}
+.sum-stat{background:var(--bg2);border:0.5px solid var(--border);border-radius:10px;padding:20px 32px;text-align:center}
+.sum-num{font-size:36px;font-weight:700;font-family:var(--mono)}
+.sum-label{font-size:13px;color:var(--text3);margin-top:4px}
+.restart-btn{font-size:15px;padding:12px 32px;border:0.5px solid var(--blue2);border-radius:8px;background:var(--blue-bg);color:var(--blue);cursor:pointer;font-family:inherit;transition:all .15s}
+.restart-btn:hover{background:var(--blue2);color:var(--text)}
+
+/* Filter pills */
+.filters{display:flex;gap:6px;flex-wrap:wrap}
+.filter-pill{font-size:11px;padding:3px 10px;border-radius:12px;cursor:pointer;font-family:var(--mono);border:0.5px solid var(--border);background:var(--bg3);color:var(--text3);transition:all .15s}
+.filter-pill:hover{border-color:var(--blue2);color:var(--blue)}
+.filter-pill.active{background:var(--blue-bg);color:var(--blue);border-color:var(--blue2)}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="dots"><div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div></div>
+  <div class="file-tab">Class1_Flashcards.html</div>
+  <div class="nav-links">
+    <a class="nav-link" href="Class1_Glossary.html">📖 Glossary</a>
+    <a class="nav-link active" href="Class1_Flashcards.html">🃏 Flashcards</a>
+    <a class="nav-link" href="Class1_IntroToTesting_Presentation.html">▶ Presentation</a>
+  </div>
+</div>
+
+<div class="main">
+  <div class="controls">
+    <div class="controls-left">
+      <div class="filters" id="filters">
+        <div class="filter-pill active" onclick="setFilter('all', this)">All (24)</div>
+        <div class="filter-pill" onclick="setFilter('annotation', this)">Annotations</div>
+        <div class="filter-pill" onclick="setFilter('concept', this)">Concepts</div>
+        <div class="filter-pill" onclick="setFilter('pattern', this)">Patterns</div>
+        <div class="filter-pill" onclick="setFilter('tool', this)">Tools</div>
+        <div class="filter-pill" onclick="setFilter('assertion', this)">Assertions</div>
+        <div class="filter-pill" onclick="setFilter('role', this)">Roles</div>
+      </div>
+    </div>
+    <div class="controls-right">
+      <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
+      <span class="counter-text" id="counter-text">1 / 24</span>
+      <button class="mode-btn" id="shuffle-btn" onclick="toggleShuffle()">⇄ Shuffle</button>
+    </div>
+  </div>
+
+  <div class="card-area" id="card-area">
+    <div class="card-scene">
+      <div class="card-inner" id="card-inner" onclick="flipCard()">
+        <div class="card-face card-front" id="card-front">
+          <div class="card-label">Tap to reveal definition</div>
+          <div class="card-term" id="card-term">@Test</div>
+          <div class="card-badge badge-annotation" id="card-badge-front">Annotation</div>
+          <div class="card-hint">Click anywhere on the card to flip</div>
+        </div>
+        <div class="card-face card-back" id="card-back">
+          <div class="card-label">Definition</div>
+          <div class="card-def" id="card-def"></div>
+          <div class="card-example" id="card-example"></div>
+          <a class="card-glossary-link" id="card-glossary-link" href="#">View in Glossary →</a>
+          <div class="result-btns" id="result-btns">
+            <button class="result-btn btn-again" onclick="markAgain(event)">↩ Study Again</button>
+            <button class="result-btn btn-good" onclick="markGood(event)">✓ Got it</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="nav-row">
+    <button class="nav-btn" id="prev-btn" onclick="prevCard()" disabled>← Previous</button>
+    <button class="flip-btn" onclick="flipCard()">Flip Card</button>
+    <button class="nav-btn" id="next-btn" onclick="nextCard()">Next →</button>
+  </div>
+</div>
+
+<script>
+const ALL_CARDS = [
+  {
+    id: 'test-annotation',
+    term: '@Test',
+    badge: 'Annotation',
+    badgeClass: 'badge-annotation',
+    category: 'annotation',
+    def: 'A JUnit annotation that marks a Kotlin function as a test. JUnit scans the class for all functions marked with @Test and runs them automatically. Without @Test, the function is just a regular Kotlin function that JUnit will never find or run.',
+    example: '@Test\nfun addTask_withValidTitle_appearsInList() {\n    // JUnit finds and runs this automatically\n}\nfun helperFunction() {\n    // No @Test — JUnit ignores this\n}',
+    glossaryId: 'term-test-annotation'
+  },
+  {
+    id: 'before-annotation',
+    term: '@Before',
+    badge: 'Annotation',
+    badgeClass: 'badge-annotation',
+    category: 'annotation',
+    def: 'A JUnit annotation that marks a function to run automatically before every single @Test function in the class. Used to create a fresh instance of the object being tested so each test starts from the same clean state.',
+    example: '@Before\nfun setUp() {\n    viewModel = TodoViewModel() // runs before EVERY test\n}',
+    glossaryId: 'term-before-annotation'
+  },
+  {
+    id: 'aaa',
+    term: 'AAA Pattern',
+    badge: 'Pattern',
+    badgeClass: 'badge-pattern',
+    category: 'pattern',
+    def: 'Arrange, Act, Assert — the three-step structure that every well-written test follows. It separates setup, execution, and verification into clear phases, making tests easy to read and maintain.',
+    example: 'val vm = TodoViewModel()          // Arrange\nvm.addTask("Buy Groceries")       // Act\nassertEquals(1, vm.getTaskCount()) // Assert',
+    glossaryId: 'term-aaa'
+  },
+  {
+    id: 'arrange',
+    term: 'Arrange',
+    badge: 'Pattern',
+    badgeClass: 'badge-pattern',
+    category: 'pattern',
+    def: 'The first step of the AAA pattern. Set up everything the test needs before running it — create objects, set the initial state, and prepare the inputs. This is the "before" state.',
+    example: '// Arrange: prepare everything the test needs\nval viewModel = TodoViewModel()\n// @Before does this automatically for every test',
+    glossaryId: 'term-arrange'
+  },
+  {
+    id: 'act',
+    term: 'Act',
+    badge: 'Pattern',
+    badgeClass: 'badge-pattern',
+    category: 'pattern',
+    def: 'The second step of the AAA pattern. Call the function or perform the action you want to test. Keep it to a single action per test — one thing being verified.',
+    example: '// Act: call the function under test\nviewModel.addTask("Buy Groceries")',
+    glossaryId: 'term-act'
+  },
+  {
+    id: 'assert',
+    term: 'Assert',
+    badge: 'Pattern',
+    badgeClass: 'badge-pattern',
+    category: 'pattern',
+    def: 'The third step of the AAA pattern. Check that the result is what you expected using assertions. If the assertion fails, the test fails and reports exactly what went wrong.',
+    example: '// Assert: verify the result\nassertEquals(1, viewModel.getTaskCount())\nassertTrue(viewModel.containsTask("Buy Groceries"))',
+    glossaryId: 'term-assert'
+  },
+  {
+    id: 'assertion',
+    term: 'Assertion',
+    badge: 'Assertion',
+    badgeClass: 'badge-assertion',
+    category: 'assertion',
+    def: 'A check inside a test that verifies a specific condition. It says "I expect this value to be X." If the condition is not met, the test fails immediately and reports the expected vs actual value.',
+    example: 'assertEquals(5, result)       // fails if result != 5\nassertTrue(list.isNotEmpty()) // fails if list is empty\nassertFalse(list.isEmpty())   // fails if list is empty',
+    glossaryId: 'term-assertion'
+  },
+  {
+    id: 'assertEquals',
+    term: 'assertEquals',
+    badge: 'Assertion',
+    badgeClass: 'badge-assertion',
+    category: 'assertion',
+    def: 'A JUnit assertion that checks whether two values are equal. Takes two parameters: the expected value first, then the actual value. If they are not equal, the test fails showing what was expected vs what was received.',
+    example: 'assertEquals(1, viewModel.getTaskCount())\n// expected: 1\n// actual: viewModel.getTaskCount()\n// fail message: "expected: <1> but was: <0>"',
+    glossaryId: 'term-assertEquals'
+  },
+  {
+    id: 'assertTrue',
+    term: 'assertTrue',
+    badge: 'Assertion',
+    badgeClass: 'badge-assertion',
+    category: 'assertion',
+    def: 'A JUnit assertion that checks whether a condition is true. Takes one parameter — any Boolean expression. If the expression returns false, the test fails.',
+    example: 'assertTrue(viewModel.containsTask("Buy Groceries"))\n// passes if containsTask() returns true\n// fails with: "expected true but was false"',
+    glossaryId: 'term-assertTrue'
+  },
+  {
+    id: 'automated-testing',
+    term: 'Automated Testing',
+    badge: 'Concept',
+    badgeClass: 'badge-concept',
+    category: 'concept',
+    def: 'Tests written in code that run automatically without human intervention. Faster, more consistent, and able to run on every code change. Catch regressions immediately and cover edge cases humans often forget.',
+    example: '// Runs automatically on every push:\n./gradlew test  // runs all unit tests in seconds\n// no developer needs to remember to run them',
+    glossaryId: 'term-automated-testing'
+  },
+  {
+    id: 'bug-lifecycle',
+    term: 'Bug Life Cycle',
+    badge: 'Concept',
+    badgeClass: 'badge-concept',
+    category: 'concept',
+    def: 'The predictable journey every bug takes from discovery to resolution: Found → Reported → Assigned → Fixed → Verified → Closed. Developers often write an automated test when fixing a bug to prevent it from coming back.',
+    example: '// 1. Found:    "App crashes on blank task"\n// 2. Reported:  steps to reproduce + screenshot\n// 3. Assigned:  developer investigates\n// 4. Fixed:     add isNotBlank() + write a test\n// 5. Verified:  QA confirms fix works\n// 6. Closed:    removed from backlog',
+    glossaryId: 'term-bug-lifecycle'
+  },
+  {
+    id: 'code-coverage',
+    term: 'Code Coverage',
+    badge: 'Concept',
+    badgeClass: 'badge-concept',
+    category: 'concept',
+    def: 'The percentage of your code that is executed by your tests. 80% coverage means 80% of your code is tested by at least one test. Higher is generally better, but 100% coverage does not guarantee the tests are well written.',
+    example: '// addTask() has 3 lines:\n// - if (title.isNotBlank()) ← tested\n// - _tasks.add(...)          ← tested\n// - Log.d(...)               ← tested\n// Coverage = 3/3 = 100%',
+    glossaryId: 'term-code-coverage'
+  },
+  {
+    id: 'compose-testing',
+    term: 'Compose Testing',
+    badge: 'Tool',
+    badgeClass: 'badge-tool',
+    category: 'tool',
+    def: 'The testing library for Jetpack Compose UI tests. Uses composeTestRule to launch composables in a test environment. Provides functions like onNodeWithTag, performClick, and assertIsDisplayed to simulate user interactions.',
+    example: 'composeTestRule\n    .onNodeWithTag("addButton")\n    .performClick()\ncomposeTestRule\n    .onNodeWithText("Buy Groceries")\n    .assertIsDisplayed()',
+    glossaryId: 'term-compose-testing'
+  },
+  {
+    id: 'developer-testing',
+    term: 'Developer Testing',
+    badge: 'Role',
+    badgeClass: 'badge-role',
+    category: 'role',
+    def: 'Testing done by the developer who wrote the code. Focuses on logic correctness using unit and integration tests. Runs automatically during development. Goal: verify that the code does what it is supposed to do.',
+    example: '// Developer writes tests for their own functions:\n@Test fun addTask_withValidTitle_appearsInList()\n@Test fun addTask_withBlankTitle_isIgnored()\n@Test fun removeTask_removesCorrectItem()',
+    glossaryId: 'term-developer-testing'
+  },
+  {
+    id: 'espresso',
+    term: 'Espresso',
+    badge: 'Tool',
+    badgeClass: 'badge-tool',
+    category: 'tool',
+    def: "Google's official framework for writing UI tests in Android. Simulates real user actions — tapping, typing, scrolling. Since this course uses Jetpack Compose, we use Compose Testing which is built on top of Espresso.",
+    example: '// Espresso / Compose Testing in androidTest/:\ncomposeTestRule.onNodeWithTag("inputField")\n    .performTextInput("Buy Groceries")\ncomposeTestRule.onNodeWithTag("addButton")\n    .performClick()',
+    glossaryId: 'term-espresso'
+  },
+  {
+    id: 'integration-test',
+    term: 'Integration Test',
+    badge: 'Concept',
+    badgeClass: 'badge-concept',
+    category: 'concept',
+    def: 'A test that checks multiple components working together. Tests the connections between pieces, not the pieces themselves. Slower than unit tests. Lives in src/androidTest/java/.',
+    example: '// Tests ViewModel + Repository + Database together:\n@Test fun addTask_savesToDatabase_andRetrieves() {\n    viewModel.addTask("Buy Groceries")\n    val fromDb = repository.getAll()\n    assertEquals("Buy Groceries", fromDb[0].title)\n}',
+    glossaryId: 'term-integration-test'
+  },
+  {
+    id: 'junit',
+    term: 'JUnit 4',
+    badge: 'Tool',
+    badgeClass: 'badge-tool',
+    category: 'tool',
+    def: 'The standard testing framework for Java and Kotlin. Finds all functions marked with @Test and runs them automatically. Reports results with green checkmarks (pass) or red X marks (fail). Runs on the JVM — no device needed.',
+    example: '// JUnit test in src/test/java/:\n@Test\nfun addition_isCorrect() {\n    assertEquals(4, 2 + 2) // passes instantly\n}',
+    glossaryId: 'term-junit'
+  },
+  {
+    id: 'manual-testing',
+    term: 'Manual Testing',
+    badge: 'Concept',
+    badgeClass: 'badge-concept',
+    category: 'concept',
+    def: 'Testing done by a human who opens the app and clicks through it. It is slow, inconsistent, misses regressions, and cannot run automatically. Best for exploratory testing and UX evaluation.',
+    example: '// Manual testing: developer opens app, types a task, taps Add\n// Problem: developer might forget to test blank title\n// Problem: cannot run automatically on every code change\n// Solution: write automated tests instead',
+    glossaryId: 'term-manual-testing'
+  },
+  {
+    id: 'mock',
+    term: 'Mock',
+    badge: 'Concept',
+    badgeClass: 'badge-concept',
+    category: 'concept',
+    def: 'A fake object that replaces a real one during testing. Allows you to test code in isolation without depending on databases, networks, or APIs. A mock always returns what you tell it to return.',
+    example: '// Real database: slow, requires setup\n// Mock database: instant, always returns fixed data\nval mockRepo = MockTodoRepository()\nmockRepo.returnTasks(listOf(Task(1, "Buy Groceries")))',
+    glossaryId: 'term-mock'
+  },
+  {
+    id: 'qa-engineer',
+    term: 'QA Engineer',
+    badge: 'Role',
+    badgeClass: 'badge-role',
+    category: 'role',
+    def: 'Quality Assurance Engineer — tests the whole product from the user\'s perspective. Finds edge cases developers missed and verifies the full user experience. Writes test cases, reports bugs with detailed reproduction steps, and verifies fixes.',
+    example: '// QA Engineer finds:\n// "App crashes when you paste text instead of typing"\n// — an edge case the developer never thought to test\n// Tools: Espresso, manual testing, test case design',
+    glossaryId: 'term-qa-engineer'
+  },
+  {
+    id: 'regression',
+    term: 'Regression',
+    badge: 'Concept',
+    badgeClass: 'badge-concept',
+    category: 'concept',
+    def: 'When a new code change breaks something that used to work correctly. Automated tests catch regressions the moment they happen — the test for the previously working feature will now fail.',
+    example: '// addTask() worked fine last week\n// Developer changes Task.kt to add a new field\n// Now addTask() silently fails — a regression\n// Unit test for addTask() fails → caught immediately',
+    glossaryId: 'term-regression'
+  },
+  {
+    id: 'test-case',
+    term: 'Test Case',
+    badge: 'Concept',
+    badgeClass: 'badge-concept',
+    category: 'concept',
+    def: 'One specific scenario being tested. A single function can have multiple test cases — one for the normal case and one or more for edge cases. Each test case is a separate @Test function.',
+    example: '// Test cases for addTask():\n@Test fun addTask_withValidTitle_appearsInList() // normal\n@Test fun addTask_withBlankTitle_isIgnored()      // edge\n@Test fun addTask_titleIsTrimmed()               // edge\n@Test fun addTask_withEmptyString_isIgnored()    // edge',
+    glossaryId: 'term-test-case'
+  },
+  {
+    id: 'testing-pyramid',
+    term: 'Testing Pyramid',
+    badge: 'Concept',
+    badgeClass: 'badge-concept',
+    category: 'concept',
+    def: 'The industry model for how many tests to write at each level. Many unit tests at the bottom (fast, cheap), fewer integration tests in the middle, few UI tests at the top (slow, expensive). The shape communicates priorities.',
+    example: '//        ▲  UI Tests (few — slow, need emulator)\n//       ▲▲▲  Integration Tests (some — medium)\n//     ▲▲▲▲▲▲▲  Unit Tests (many — fast, no device)',
+    glossaryId: 'term-testing-pyramid'
+  },
+  {
+    id: 'testTag',
+    term: 'testTag',
+    badge: 'Tool',
+    badgeClass: 'badge-tool',
+    category: 'tool',
+    def: 'A Jetpack Compose modifier that assigns a name to a composable element so UI tests can find it reliably. Added in app code with .testTag("name") and accessed in tests with onNodeWithTag("name"). Names are case-sensitive.',
+    example: '// In app code (TodoScreen.kt):\nOutlinedTextField(\n    modifier = Modifier.testTag("inputField")\n)\n// In test code (TodoScreenTest.kt):\ncomposeTestRule.onNodeWithTag("inputField")\n    .performTextInput("Buy Groceries")',
+    glossaryId: 'term-testTag'
+  },
+  {
+    id: 'unit-test',
+    term: 'Unit Test',
+    badge: 'Concept',
+    badgeClass: 'badge-concept',
+    category: 'concept',
+    def: 'A test that verifies a single function or class in complete isolation — no database, no network, no UI. The fastest and most numerous type of test. Runs on the JVM in milliseconds. Lives in src/test/java/.',
+    example: '// Unit test — no emulator, runs in milliseconds:\n@Test\nfun addTask_withValidTitle_appearsInList() {\n    val viewModel = TodoViewModel()\n    viewModel.addTask("Buy Groceries")\n    assertEquals(1, viewModel.getTaskCount())\n}',
+    glossaryId: 'term-unit-test'
+  },
+  {
+    id: 'ui-test',
+    term: 'UI Test',
+    badge: 'Concept',
+    badgeClass: 'badge-concept',
+    category: 'concept',
+    def: 'A test that simulates a real user interacting with the app — typing, tapping, scrolling — and verifies what appears on screen. Requires a running emulator. Slowest but most realistic type of test. Lives in src/androidTest/java/.',
+    example: '// UI test — needs a running emulator:\n@Test\nfun addTask_appearsInList() {\n    composeTestRule.onNodeWithTag("inputField")\n        .performTextInput("Buy Groceries")\n    composeTestRule.onNodeWithTag("addButton").performClick()\n    composeTestRule.onNodeWithText("Buy Groceries").assertIsDisplayed()\n}',
+    glossaryId: 'term-ui-test'
+  },
+];
+
+let cards = [...ALL_CARDS];
+let currentIndex = 0;
+let isFlipped = false;
+let shuffleOn = false;
+let markedGood = new Set();
+let markedAgain = new Set();
+let currentFilter = 'all';
+
+function renderCard() {
+  const card = cards[currentIndex];
+  document.getElementById('card-term').textContent = card.term;
+  document.getElementById('card-badge-front').textContent = card.badge;
+  document.getElementById('card-badge-front').className = 'card-badge ' + card.badgeClass;
+  document.getElementById('card-def').textContent = card.def;
+  document.getElementById('card-example').textContent = card.example;
+  document.getElementById('card-glossary-link').href = 'Class1_Glossary.html#' + card.glossaryId;
+
+  // Update progress
+  const pct = ((currentIndex + 1) / cards.length) * 100;
+  document.getElementById('progress-fill').style.width = pct + '%';
+  document.getElementById('counter-text').textContent = (currentIndex + 1) + ' / ' + cards.length;
+
+  // Update nav buttons
+  document.getElementById('prev-btn').disabled = currentIndex === 0;
+  document.getElementById('next-btn').disabled = currentIndex === cards.length - 1;
+
+  // Reset flip
+  isFlipped = false;
+  document.getElementById('card-inner').classList.remove('flipped');
+
+  // Update card border based on mark
+  const inner = document.getElementById('card-inner');
+  if (markedGood.has(card.id)) {
+    document.querySelector('.card-front').style.borderColor = 'var(--green2)';
+    document.querySelector('.card-back').style.borderColor = 'var(--green2)';
+  } else if (markedAgain.has(card.id)) {
+    document.querySelector('.card-front').style.borderColor = 'var(--red2)';
+    document.querySelector('.card-back').style.borderColor = 'var(--red2)';
+  } else {
+    document.querySelector('.card-front').style.borderColor = 'var(--border2)';
+    document.querySelector('.card-back').style.borderColor = 'var(--border2)';
+  }
+}
+
+function flipCard() {
+  isFlipped = !isFlipped;
+  document.getElementById('card-inner').classList.toggle('flipped', isFlipped);
+}
+
+function nextCard() {
+  if (currentIndex < cards.length - 1) {
+    currentIndex++;
+    renderCard();
+  }
+}
+
+function prevCard() {
+  if (currentIndex > 0) {
+    currentIndex--;
+    renderCard();
+  }
+}
+
+function markGood(e) {
+  e.stopPropagation();
+  const card = cards[currentIndex];
+  markedGood.add(card.id);
+  markedAgain.delete(card.id);
+  if (currentIndex < cards.length - 1) {
+    currentIndex++;
+    renderCard();
+  }
+}
+
+function markAgain(e) {
+  e.stopPropagation();
+  const card = cards[currentIndex];
+  markedAgain.add(card.id);
+  markedGood.delete(card.id);
+  if (currentIndex < cards.length - 1) {
+    currentIndex++;
+    renderCard();
+  }
+}
+
+function toggleShuffle() {
+  shuffleOn = !shuffleOn;
+  document.getElementById('shuffle-btn').classList.toggle('on', shuffleOn);
+  if (shuffleOn) {
+    cards = [...cards].sort(() => Math.random() - 0.5);
+  } else {
+    cards = ALL_CARDS.filter(c => currentFilter === 'all' || c.category === currentFilter);
+  }
+  currentIndex = 0;
+  renderCard();
+}
+
+function setFilter(filter, el) {
+  currentFilter = filter;
+  document.querySelectorAll('.filter-pill').forEach(p => p.classList.remove('active'));
+  el.classList.add('active');
+  cards = filter === 'all' ? [...ALL_CARDS] : ALL_CARDS.filter(c => c.category === filter);
+  if (shuffleOn) cards = cards.sort(() => Math.random() - 0.5);
+  currentIndex = 0;
+  renderCard();
+}
+
+// Keyboard navigation
+document.addEventListener('keydown', e => {
+  if (e.key === 'ArrowRight') nextCard();
+  if (e.key === 'ArrowLeft') prevCard();
+  if (e.key === ' ') { e.preventDefault(); flipCard(); }
+});
+
+// Handle anchor links from glossary
+window.addEventListener('load', () => {
+  const hash = window.location.hash;
+  if (hash) {
+    const cardId = hash.replace('#card-', '');
+    const idx = ALL_CARDS.findIndex(c => c.id === cardId);
+    if (idx !== -1) {
+      currentIndex = idx;
+    }
+  }
+  renderCard();
+});
+</script>
+</body>
+</html>
